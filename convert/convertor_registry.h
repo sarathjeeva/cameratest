@@ -9,7 +9,7 @@ class convertor;
 
 class convertor_factory {
 public:
-	convertor_factory(const std::string& name, 
+	convertor_factory(const std::string& name,
 					  unsigned int srcfmt, 
 					  unsigned int dstfmt, 
 					  const std::string& documentation);
@@ -23,10 +23,10 @@ public:
 	unsigned int get_dstfmt() { return dstfmt_; }
 
 private:
-	std::string name_;
-	std::string documentation_;
 	unsigned int srcfmt_;
 	unsigned int dstfmt_;
+	std::string name_;
+	std::string documentation_;
 };
 
 template <typename convertor_t>
@@ -74,6 +74,6 @@ private:
 				#name, srcfmt, dstfmt, doc)										\
 		{}														\
 	};															\
-	static name##_convertor_factory_impl _registerer;
+	static name##_convertor_factory_impl name##_registerer;
 
 #endif

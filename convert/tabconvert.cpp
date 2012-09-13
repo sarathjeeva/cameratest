@@ -247,24 +247,29 @@ void TabConvert::printTables(void)
 }
 
 #include "convertor.h"
-class yuyv_rgb24_convertor: public convertor {
-public:
-	yuyv_rgb24_convertor(int width)
-		: convertor(width)
-	{
-		con_ = new TabConvert(width, 0);
-		con_->setYUVFormat(V4L2_PIX_FMT_YUYV);
-		con_->setRGBFormat(V4L2_PIX_FMT_RGB24);
-	}
+#define DEFINE_YUV422_RGB24_CLASS(srcfmt) 	\
+class srcfmt##_rgb24_convertor: public convertor { 	\
+public:													\
+	srcfmt##_rgb24_convertor(int width)						\
+		: convertor(width)								\
+	{													\
+		con_ = new TabConvert(width, 0);				\
+		con_->setYUVFormat(V4L2_PIX_FMT_##srcfmt);			\
+		con_->setRGBFormat(V4L2_PIX_FMT_RGB24);			\
+	}													\
+	void convert(const unsigned char* inbuf, 			\
+				 unsigned char* outbuf, int rows)		\
+	{													\
+		con_->convertYCC2RGB(inbuf, outbuf, rows);		\
+	}													\
+private:												\
+	TabConvert* con_;									\
+};														\
+REGISTER_CONVERTOR(srcfmt##_rgb24, V4L2_PIX_FMT_##srcfmt, V4L2_PIX_FMT_RGB24, "convert #srcfmt to RGB24")
 
-	void convert(const unsigned char* inbuf, 
-				 unsigned char* outbuf, int rows)
-	{
-		con_->convertYCC2RGB(inbuf, outbuf, rows);
-	}
+DEFINE_YUV422_RGB24_CLASS(UYVY)
+DEFINE_YUV422_RGB24_CLASS(YYUV)
+DEFINE_YUV422_RGB24_CLASS(VYUY)
+DEFINE_YUV422_RGB24_CLASS(YVYU)
+DEFINE_YUV422_RGB24_CLASS(YUYV)
 
-private:
-	TabConvert* con_;
-};
-
-REGISTER_CONVERTOR(yuyv_rgb24, V4L2_PIX_FMT_YUYV, V4L2_PIX_FMT_RGB24, "convert YUYV to RGB24")

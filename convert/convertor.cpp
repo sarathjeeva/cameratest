@@ -34,9 +34,9 @@ convertor_factory::convertor_factory(
 		unsigned int srcfmt, 
 		unsigned int dstfmt, 
 		const std::string& documentation)
-	: name_(name)
-	, srcfmt_(srcfmt)
+	: srcfmt_(srcfmt)
 	, dstfmt_(dstfmt)
+	, name_(name)
 	, documentation_(documentation)
 {
 	convertor_registry::register_convertor(this);
