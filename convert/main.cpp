@@ -3,6 +3,7 @@
 #include <stdlib.h>
 #include <string>
 #include <iostream>
+#include <linux/videodev2.h>
 #include "convertor.h"
 #include "convertor_registry.h"
 
@@ -24,7 +25,7 @@ void failure(const char *fmt, ...)
 int main(int argc, char *argv[])
 {
 	convertor* con;
-	con = convertor_registry::get_convertor("yuyv_rgb24", 720);
+	con = convertor_registry::get_convertor(V4L2_PIX_FMT_YUYV, V4L2_PIX_FMT_RGB24, 720);
 	int width = con->get_width();
 	std::cout << "Width: " << width << std::endl;
 	return 0;

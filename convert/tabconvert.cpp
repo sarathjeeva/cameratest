@@ -267,4 +267,4 @@ private:
 	TabConvert* con_;
 };
 
-REGISTER_CONVERTOR(yuyv_rgb24, "convert YUYV to RGB24")
+REGISTER_CONVERTOR(yuyv_rgb24, V4L2_PIX_FMT_YUYV, V4L2_PIX_FMT_RGB24, "convert YUYV to RGB24")

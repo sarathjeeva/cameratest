@@ -10,6 +10,8 @@ class convertor;
 class convertor_factory {
 public:
 	convertor_factory(const std::string& name, 
+					  unsigned int srcfmt, 
+					  unsigned int dstfmt, 
 					  const std::string& documentation);
 	virtual ~convertor_factory() {}
 
@@ -17,18 +19,24 @@ public:
 
 	std::string get_name() { return name_; }
 	std::string get_documentation() { return documentation_; }
+	unsigned int get_srcfmt() { return srcfmt_; }
+	unsigned int get_dstfmt() { return dstfmt_; }
 
 private:
 	std::string name_;
 	std::string documentation_;
+	unsigned int srcfmt_;
+	unsigned int dstfmt_;
 };
 
 template <typename convertor_t>
 class convertor_factory_impl : public convertor_factory {
 public:
 	convertor_factory_impl(const std::string& name, 
+					  	   unsigned int srcfmt, 
+					  	   unsigned int dstfmt, 
 						   const std::string& documentation)
-		: convertor_factory(name, documentation)
+		: convertor_factory(name, srcfmt, dstfmt, documentation)
 	{}
 
 	virtual convertor* get_convertor(int width) {
@@ -48,7 +56,7 @@ public:
 
 	//typedef std::map<std::string, convertor_factory*> con_map_t;
 	typedef std::pair<unsigned int, unsigned int> convertor_fmt_t;
-	typedef std::map<std::pair<unsigned int, unsigned int>, convertor_factory*> con_map_t;
+	typedef std::map<convertor_fmt_t, convertor_factory*> con_map_t;
 	static con_map_t& get_convertor_map();
 
 private:
@@ -56,14 +64,14 @@ private:
 	convertor_registry(const convertor_registry&);
 };
 
-#define REGISTER_CONVERTOR(name, doc)				\
+#define REGISTER_CONVERTOR(name, srcfmt, dstfmt, doc)				\
 	class name##_convertor_factory_impl						\
 		: public convertor_factory_impl<name##_convertor>		\
 	{															\
 	public:														\
 		name##_convertor_factory_impl()						\
 			: convertor_factory_impl<name##_convertor>(		\
-				#name, doc)										\
+				#name, srcfmt, dstfmt, doc)										\
 		{}														\
 	};															\
 	static name##_convertor_factory_impl _registerer;
