@@ -7,9 +7,11 @@
 #include <assert.h>
 
 #include "tabconvert.h"
+#include "convert/convertor.h"
 #include "camera.h"
 
-static TabConvert *__pConvert = NULL;
+//static TabConvert *__pConvert = NULL;
+static convertor*__pConvert = NULL;
 
 VideoWidget::VideoWidget(Camera *camera, QWidget *parent) 
 	: QWidget(parent), camera_(camera)
@@ -32,9 +34,12 @@ int VideoWidget::initCamera()
 		goto err;
 	}
 	if (__pConvert == NULL) {
+#if 0
 		__pConvert = new TabConvert(fmt_.width, fmt_.height);
 		__pConvert->setYUVFormat(fmt_.pixelformat);
 		__pConvert->setRGBFormat(V4L2_PIX_FMT_RGB24);
+#endif
+		__pConvert = convertor_registry::get_convertor(fmt_.pixelformat, V4L2_PIX_FMT_RGB24, fmt_.width);
 	}
 	if (camera_->allocBuffers(3) < 0) {
 		qDebug() << "allocBuffers failed";
@@ -65,7 +70,7 @@ void VideoWidget::readImage(int socket)
 	dup = ptr = camera_->dqbuf();
 	for (l = 0; l < fmt_.height; l++) {
 		unsigned char *dest = (unsigned char *)image_->scanLine(l);
-		__pConvert->convertYCC2RGB(ptr, dest, 1);
+		__pConvert->convert(ptr, dest, 1);
 		ptr += fmt_.bytesperline;
 #if 0
 		unsigned short *nextline = (unsigned short *)this->image_->scanLine(l*2+1);

@@ -1,7 +1,25 @@
+#include <stdlib.h>
+#include <stdarg.h>
+
 #include <QtGui>
 #include "videowidget.h"
 #include "camera.h"
 #include "cameraattr.h"
+
+/**
+ * Prints a failure message and exists
+ *
+ * @param fmt C format string followed by additional arguments
+ */
+void failure(const char *fmt, ...)
+{
+	va_list args;
+	va_start(args, fmt);
+	vfprintf(stderr, fmt, args);
+	va_end(args);
+	printf("\n");
+	exit(1);
+}
 
 #define WIDTH	320
 #define HEIGHT	240
